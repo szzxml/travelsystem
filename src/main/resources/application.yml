@@ -1,0 +1,41 @@
+server:
+  port: 8080
+  shutdown: graceful
+
+spring:
+  application:
+    name: travelsystem
+  profiles:
+    active: dev
+  jackson:
+    time-zone: Asia/Shanghai
+  jpa:
+    open-in-view: false
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/travelsystem?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:123456}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+      keepalive-time: 60000
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  packages-to-scan: com.ts
+
+app:
+  jwt:
+    issuer: ts
+    secret: travelsystem-jwt-secret-key-2024-must-be-at-least-32-chars
+    access-token-validity: 7200
+  cors:
+    allowed-origins: "*"

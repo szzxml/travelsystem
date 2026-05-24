@@ -1,0 +1,14 @@
+spring:
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/travelsystem_prod?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:123456}
+
+logging:
+  level:
+    root: INFO
+    com.ts: INFO

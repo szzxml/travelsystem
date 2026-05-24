@@ -1,0 +1,97 @@
+$admin-surface: hsl(var(--panel));
+$admin-surface-strong: var(--bg-soft);
+$admin-border: var(--border);
+$admin-border-strong: var(--border-strong);
+$admin-text-primary: hsl(var(--text-100));
+$admin-text-secondary: var(--text-muted);
+
+.admin-page-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-page-shell__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.admin-page-shell__title {
+  margin: 0;
+  font-size: 1.35rem;
+  color: $admin-text-primary;
+}
+
+.admin-page-shell__subtitle {
+  margin: 0.2rem 0 0;
+  font-size: 0.82rem;
+  color: $admin-text-secondary;
+}
+
+.admin-page-shell__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.admin-page-shell__filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  border-radius: 1.25rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(var(--brand-soft-rgb), 0.28) 0%, $admin-surface 58%);
+  border: 1px solid $admin-border;
+  box-shadow: 0 12px 30px rgba(var(--brand-dark-rgb), 0.06);
+}
+
+.admin-page-shell__filters-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.admin-page-shell__content {
+  border-radius: 1.25rem;
+  padding: 1rem;
+  background: linear-gradient(180deg, rgba(var(--brand-soft-rgb), 0.22) 0%, $admin-surface 22%, $admin-surface 100%);
+  border: 1px solid $admin-border-strong;
+  box-shadow: 0 18px 40px rgba(var(--brand-dark-rgb), 0.08);
+}
+
+.admin-page-shell__summary {
+  flex: 0 0 auto;
+}
+
+.admin-page-shell {
+  .el-button.is-round {
+    padding-inline: 1rem;
+  }
+
+  .el-card {
+    background: linear-gradient(180deg, rgba(var(--brand-soft-rgb), 0.2) 0%, $admin-surface 40%) !important;
+    border: 1px solid $admin-border !important;
+    box-shadow: 0 16px 36px rgba(var(--brand-dark-rgb), 0.06) !important;
+  }
+
+  .el-card__header,
+  .el-card__body,
+  .el-radio-button__inner,
+  .el-switch__label,
+  .el-tag__content {
+    color: $admin-text-primary;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-page-shell__filters {
+    align-items: flex-start;
+  }
+}
