@@ -17,11 +17,11 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
     boolean existsByOrderNo(String orderNo);
 
     @Override
-    @EntityGraph(attributePaths = {"user", "route"})
+    @EntityGraph(attributePaths = {"user", "route", "route.hotel"})
     Page<Order> findAll(Specification<Order> spec, Pageable pageable);
 
     @Override
-    @EntityGraph(attributePaths = {"user", "route"})
+    @EntityGraph(attributePaths = {"user", "route", "route.hotel"})
     Optional<Order> findById(Long id);
 
     @Query("SELECT COUNT(o) FROM Order o WHERE o.createdAt >= :start")

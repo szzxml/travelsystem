@@ -1,4 +1,4 @@
-﻿<script setup>
+<script setup>
 import { reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -160,18 +160,20 @@ watch(
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="320" align="center" fixed="right">
+        <el-table-column label="操作" width="280" align="center" fixed="right">
           <template #default="{ row }">
-            <el-button v-if="nextStatus[row.status]" size="small" type="primary" @click="advance(row)">
-              流转至{{ statusMap[nextStatus[row.status]]?.label }}
-            </el-button>
-            <el-button v-if="row.status === 'PENDING'" size="small" type="danger" plain @click="rejectOrder(row)">
-              拒绝
-            </el-button>
-            <el-button v-if="['PENDING', 'CONFIRMED'].includes(row.status)" size="small" type="warning" @click="cancelOrder(row)">
-              取消
-            </el-button>
-            <el-button size="small" type="danger" @click="removeOrder(row)">删除</el-button>
+            <div class="flex items-center justify-center gap-1.5 flex-wrap">
+              <el-button v-if="nextStatus[row.status]" size="small" type="primary" @click="advance(row)">
+                流转至{{ statusMap[nextStatus[row.status]]?.label }}
+              </el-button>
+              <el-button v-if="row.status === 'PENDING'" size="small" type="danger" plain @click="rejectOrder(row)">
+                拒绝
+              </el-button>
+              <el-button v-if="['PENDING', 'CONFIRMED'].includes(row.status)" size="small" type="warning" @click="cancelOrder(row)">
+                取消
+              </el-button>
+              <el-button size="small" type="danger" @click="removeOrder(row)">删除</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>

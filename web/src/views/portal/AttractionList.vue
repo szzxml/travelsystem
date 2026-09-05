@@ -3,12 +3,35 @@ import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { getPublicAttractions } from '@/api/public'
 import { formatMoney } from '@/utils/format'
+import forestHero from '@/assets/forest-hero.jpg'
 
 const router = useRouter()
 const loading = ref(false)
 const list = ref([])
 const total = ref(0)
 const query = reactive({ keyword: '', page: 1, size: 9 })
+
+const fallbackAttractionImages = [
+  'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80',
+  'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=800&q=80',
+  'https://images.unsplash.com/photo-1477959858617-67f30bc75b82?auto=format&fit=crop&w=800&q=80',
+  'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=800&q=80',
+  'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80',
+  'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=800&q=80',
+]
+
+function getAttractionImage(item, index = 0) {
+  if (item?.coverImage && String(item.coverImage).trim()) {
+    return item.coverImage.trim()
+  }
+  return fallbackAttractionImages[index % fallbackAttractionImages.length]
+}
+
+function handleImageError(event) {
+  if (event?.target) {
+    event.target.src = forestHero
+  }
+}
 
 async function load() {
   loading.value = true
@@ -82,7 +105,7 @@ onMounted(load)
       <div v-loading="loading">
         <div v-if="list.length" class="card-grid">
           <article
-            v-for="item in list"
+            v-for="(item, index) in list"
             :key="item.id"
             class="attraction-card"
             role="button"
@@ -92,8 +115,7 @@ onMounted(load)
             @keyup.enter="openDetail(item.id)"
           >
             <div class="card-cover">
-              <img v-if="item.coverImage" :src="item.coverImage" :alt="item.name">
-              <div v-else class="card-cover-placeholder">{{ item.location || '景点信息' }}</div>
+              <img :src="getAttractionImage(item, index)" :alt="item.name" @error="handleImageError">
               <span class="card-status" :class="getStatusClass(item.status)">
                 {{ getStatusLabel(item.status) }}
               </span>

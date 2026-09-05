@@ -3,11 +3,35 @@ import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { getPublicRoutes } from '@/api/public'
 
+import forestHero from '@/assets/forest-hero.jpg'
+
 const router = useRouter()
 const loading = ref(false)
 const list = ref([])
 const total = ref(0)
 const query = reactive({ keyword: '', page: 1, size: 9 })
+
+const fallbackRouteImages = [
+  'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=800&q=80',
+  'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80',
+  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
+  'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80',
+  'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=800&q=80',
+  'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=800&q=80',
+]
+
+function getRouteImage(item, index = 0) {
+  if (item?.coverImage && String(item.coverImage).trim()) {
+    return item.coverImage.trim()
+  }
+  return fallbackRouteImages[index % fallbackRouteImages.length]
+}
+
+function handleImageError(event) {
+  if (event?.target) {
+    event.target.src = forestHero
+  }
+}
 
 async function load() {
   loading.value = true
@@ -52,7 +76,7 @@ onMounted(load)
       <div v-loading="loading">
         <div v-if="list.length" class="card-grid">
           <article
-            v-for="item in list"
+            v-for="(item, index) in list"
             :key="item.id"
             class="route-card"
             role="button"
@@ -62,8 +86,7 @@ onMounted(load)
             @keyup.enter="router.push(`/routes/${item.id}`)"
           >
             <div class="card-cover">
-              <img v-if="item.coverImage" :src="item.coverImage" :alt="item.title">
-              <div v-else class="card-cover-placeholder">线路封面</div>
+              <img :src="getRouteImage(item, index)" :alt="item.title" @error="handleImageError">
               <div class="card-badge">{{ item.days }} 天</div>
             </div>
 

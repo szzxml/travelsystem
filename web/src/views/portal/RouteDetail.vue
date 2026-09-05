@@ -8,6 +8,7 @@ import { useUserStore } from '@/stores/user'
 import { useOrderStore } from '@/stores/order'
 import { formatMoney } from '@/utils/format'
 import BookingForm from '@/components/BookingForm.vue'
+import forestHero from '@/assets/forest-hero.jpg'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,6 +18,21 @@ const detail = ref(null)
 const loading = ref(true)
 const bookingVisible = ref(false)
 const bookingLoading = ref(false)
+
+const fallbackRouteImage = 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80'
+
+function getDetailCover(item) {
+  if (item?.coverImage && String(item.coverImage).trim()) {
+    return item.coverImage.trim()
+  }
+  return fallbackRouteImage
+}
+
+function handleImageError(event) {
+  if (event?.target) {
+    event.target.src = forestHero
+  }
+}
 
 function formatHotelStar(value) {
   return value ? `${value} 星级` : '暂无评级'
@@ -80,8 +96,7 @@ async function submitBooking(form) {
       <div class="detail-layout">
         <div class="detail-main">
           <div class="detail-cover">
-            <img v-if="detail.coverImage" :src="detail.coverImage" :alt="detail.title">
-            <div v-else class="cover-placeholder">线路封面</div>
+            <img :src="getDetailCover(detail)" :alt="detail.title" @error="handleImageError">
           </div>
 
           <el-card style="margin-top: 20px">

@@ -45,9 +45,11 @@ npm run preview
 
 - `/admin/dashboard`
 - `/admin/routes`
+- `/admin/hotels`
 - `/admin/attractions`
 - `/admin/orders`
 - `/admin/users`
 - `/admin/notices`
+- `/admin/settings`
 
 更多项目背景、后端架构和部署方式见仓库根目录 `README.md`。

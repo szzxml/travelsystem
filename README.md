@@ -12,8 +12,8 @@ Security + JWT + JPA + MySQL 8.0` 和 `Vue 3 + Pinia + Element Plus + Axios` 的
 - 支持查看基础运营统计数据
 
 说明：
-- 当前仓库已实现“路线、景点、订单、公告、用户、统计”主干能力。
-- 文档要求中的“酒店资源集中管理”模块，当前代码仓库中未发现 `Hotel` 实体、接口或前端页面，属于待补项。
+- 当前仓库已完整实现“路线、酒店、景点、订单、公告、用户、统计”各业务主干能力与管理闭环。
+- 已包含酒店资源集中管理（`Hotel` 实体、接口、后台管理页面及路线关联）。
 
 ## 2. 技术栈
 
@@ -84,7 +84,7 @@ Security + JWT + JPA + MySQL 8.0` 和 `Vue 3 + Pinia + Element Plus + Axios` 的
 - 已支持能力：
   - 路线分页查询
   - 路线详情查询
-  - 新增路线
+  - 新增路线（支持下拉关联合作酒店）
   - 修改路线
   - 删除路线
 - 路线状态字段：
@@ -93,9 +93,22 @@ Security + JWT + JPA + MySQL 8.0` 和 `Vue 3 + Pinia + Element Plus + Axios` 的
   - `OFFLINE`
 
 说明：
-- “上下架”能力通过 `status` 字段控制，实际不是单独的上下架接口，而是通过新增/编辑时维护状态实现。
+- “上下架”能力通过 `status` 字段控制，通过新增/编辑时维护状态实现。
+- 路线与合作酒店（`Hotel`）已建立多对一外键关联。
 
-### 4.3 景点管理
+### 4.3 酒店管理
+
+- 后台接口前缀：`/api/admin/hotels`
+- 已支持能力：
+  - 酒店列表与分页查询（支持关键词、状态筛选）
+  - 酒店详情查询
+  - 新增酒店（包含城市、地址、联系电话、星级、描述等）
+  - 编辑酒店信息
+  - 启用/停用状态切换（`ACTIVE` / `INACTIVE`）
+  - 删除酒店
+- 业务联动：在路线管理的新增/编辑弹窗中，可直接下拉选择并关联合作酒店。
+
+### 4.4 景点管理
 
 - 前台公共查询接口：`/api/public/attractions`
 - 后台管理接口前缀：`/api/admin/attractions`
@@ -105,7 +118,7 @@ Security + JWT + JPA + MySQL 8.0` 和 `Vue 3 + Pinia + Element Plus + Axios` 的
   - 新增/修改/删除
   - 状态过滤
 
-### 4.4 订单管理
+### 4.5 订单管理
 
 - 用户接口：
   - `POST /api/orders` 提交订单
@@ -113,26 +126,28 @@ Security + JWT + JPA + MySQL 8.0` 和 `Vue 3 + Pinia + Element Plus + Axios` 的
 - 管理员接口：
   - `GET /api/admin/orders`
   - `GET /api/admin/orders/{id}`
-  - `PATCH /api/admin/orders/{id}/status`
+  - `PATCH /api/admin/orders/{id}/status`（支持流转推进及填写拒绝原因 `rejectReason`）
   - `DELETE /api/admin/orders/{id}`
 
 当前订单状态枚举：
 
-- `PENDING`
-- `CONFIRMED`
-- `PAID`
-- `CANCELLED`
-- `REFUNDING`
-- `REFUNDED`
-- `COMPLETED`
+- `PENDING`（待确认）
+- `CONFIRMED`（已确认）
+- `REJECTED`（已拒绝）
+- `PAID`（已支付）
+- `CANCELLED`（已取消）
+- `REFUNDING`（退款中）
+- `REFUNDED`（已退款）
+- `COMPLETED`（已完成）
 
 说明：
-- 订单创建过程已使用事务保证原子性。
-- 文档要求中的“提交/确认/拒绝/取消”流程，目前已覆盖“提交、确认、取消”，但代码中没有单独的 `REJECTED` 状态；若验收必须体现“拒绝”，建议新增明确状态并补齐前后端交互。
+- 订单创建及状态流转已使用事务保证原子性。
+- 完整支持“提交/确认/拒绝/取消”流程：管理员在后台可对 `PENDING` 订单进行确认或拒绝（拒绝强制填写原因），前台旅客在“我的订单”可清晰查看拒绝原因。
 
-### 4.5 统计报表
+### 4.6 统计报表与数据导出
 
-- 接口：`GET /api/admin/stats`
+- 统计数据接口：`GET /api/admin/stats`
+- 数据导出接口：`GET /api/admin/stats/export`（生成并下载标准 CSV 文件）
 - 当前已提供指标：
   - 路线总数
   - 景点总数
@@ -143,10 +158,10 @@ Security + JWT + JPA + MySQL 8.0` 和 `Vue 3 + Pinia + Element Plus + Axios` 的
   - 总营收
 
 说明：
-- 当前实现为统计数据查询接口。
-- 文档要求中的“导出 CSV”功能，仓库中暂未发现对应控制器、服务或前端导出逻辑，属于待补项。
+- 服务端使用 `StatsService` 汇总关键指标并生成带 UTF-8 BOM 的标准 CSV 文本流。
+- 前端管理后台仪表盘（Dashboard）已集成“导出 CSV”功能，点击直接触发文件下载。
 
-### 4.6 公共门户
+### 4.7 公共门户
 
 前台已提供：
 
@@ -155,18 +170,19 @@ Security + JWT + JPA + MySQL 8.0` 和 `Vue 3 + Pinia + Element Plus + Axios` 的
 - 路线详情 `/routes/:id`
 - 景点列表 `/attractions`
 - 景点详情 `/attractions/:id`
-- 我的订单 `/my-orders`
+- 我的订单 `/my-orders`（含订单状态展示及拒绝原因提示）
 - 登录 `/login`
 - 注册 `/register`
 
-### 4.7 管理后台
+### 4.8 管理后台
 
 后台已提供：
 
-- 仪表盘 `/admin/dashboard`
-- 路线管理 `/admin/routes`
+- 仪表盘 `/admin/dashboard`（含数据指标统计与 CSV 导出功能）
+- 路线管理 `/admin/routes`（支持维护路线信息及关联合作酒店）
+- 酒店管理 `/admin/hotels`（支持酒店 CRUD 与状态启停用）
 - 景点管理 `/admin/attractions`
-- 订单管理 `/admin/orders`
+- 订单管理 `/admin/orders`（支持确认、拒绝并记录原因、取消与状态推进）
 - 用户管理 `/admin/users`
 - 公告管理 `/admin/notices`
 - 设置页 `/admin/settings`
@@ -213,27 +229,28 @@ travelsystem
 
 - 数据库名：`travelsystem`
 - 地址：`localhost:3306`
-- 用户名：`root`
-- 密码：`root`
+- 用户名：`root`（环境变量 `DB_USERNAME`，默认值 `root`）
+- 密码：`123456`（环境变量 `DB_PASSWORD`，默认值 `123456`）
 
 当前核心实体：
 
-- `User`
-- `TourRoute`
-- `Order`
-- `Attraction`
-- `Notice`
-- `Review`
+- `User`（用户表 `ts_user`）
+- `TourRoute`（旅游线路表 `ts_tour_route`）
+- `Hotel`（酒店表 `ts_hotel`）
+- `Order`（订单表 `ts_order`）
+- `Attraction`（景点表 `ts_attraction`）
+- `Notice`（公告表 `ts_notice`）
+- `Review`（评价表 `ts_review`）
 
 说明：
 - JPA 配置为 `ddl-auto: update`，启动时会按实体自动同步表结构。
-- 当前已明确存在的唯一约束字段包括：
-  - `ts_user.username`
-  - `ts_order.order_no`
-- 文档要求中的“关键字段索引优化”目前未在实体注解中显式完整声明，生产环境建议补充以下索引：
-  - 订单表：`status`、`created_at`、`user_id`、`route_id`
-  - 路线表：`status`、`destination`
-  - 景点表：`status`、`location`
+- 核心唯一约束与检索索引已全面显式配置：
+  - 唯一约束：`ts_user.username`、`ts_order.order_no`
+  - 订单表索引：`idx_ts_order_status`、`idx_ts_order_created_at`、`idx_ts_order_user_id`、`idx_ts_order_route_id`
+  - 路线表索引：`idx_ts_route_status`、`idx_ts_route_destination`、`idx_ts_route_hotel_id`
+  - 景点表索引：`idx_ts_attraction_status`、`idx_ts_attraction_location`
+  - 酒店表索引：`idx_ts_hotel_city`、`idx_ts_hotel_status`、`idx_ts_hotel_name`
+  - 用户表索引：`idx_ts_user_username`
 
 ## 8. 部署与运行
 
@@ -322,27 +339,26 @@ server {
 | 文档要求 | 当前状态 | 说明 |
 | --- | --- | --- |
 | 用户注册/登录 + JWT | 已实现 | 支持登录、注册、JWT 鉴权 |
-| 路线管理增删改查 + 上下架 | 基本实现 | 通过状态字段维护 `DRAFT/PUBLISHED/OFFLINE` |
-| 景点管理 | 已实现 | 前后台均已具备 |
-| 订单提交/确认/拒绝/取消 | 部分实现 | 缺少明确 `REJECTED` 状态 |
-| 统计报表导出 CSV | 未实现 | 当前仅有统计接口，无导出 |
-| 管理员后台与运营数据 | 已实现 | 有后台页面与统计接口 |
-| 酒店资源集中管理 | 未实现 | 当前无 Hotel 模块 |
-| 统一 `Result<T>` | 已实现但命名不同 | 当前类名为 `ApiResponse<T>` |
-| MVC 三层 + Mapper | 已实现但技术实现不同 | 实际为 `Controller + Service + Repository(JPA)` |
-| 事务保证订单原子性 | 已实现 | `OrderService#create` 使用事务 |
-| JWT 无状态认证 | 已实现 | Spring Security + JWT |
-| 角色权限控制 | 已实现 | `ADMIN/USER` |
-| BCrypt 密码加密 | 已实现 | 后端登录注册均使用 |
-| 关键字段索引优化 | 部分实现 | 仅见唯一约束，检索索引需补充 |
+| 路线管理增删改查 + 上下架 | 已实现 | 通过状态字段维护 `DRAFT/PUBLISHED/OFFLINE`，支持关联合作酒店 |
+| 景点管理 | 已实现 | 前后台均已具备完备 CRUD 与展示 |
+| 订单提交/确认/拒绝/取消 | 已实现 | 支持 `REJECTED` 状态与拒绝原因，严格状态机流转控制 |
+| 统计报表导出 CSV | 已实现 | 后端提供 `/api/admin/stats/export`，前端仪表盘一键导出 CSV |
+| 管理员后台与运营数据 | 已实现 | 具备全套管理后台页面与实时运营指标统计 |
+| 酒店资源集中管理 | 已实现 | 具备 `Hotel` 实体、后台 CRUD、状态切换及路线关联 |
+| 统一 `Result<T>` | 已实现（类名等价） | 当前类名为 `ApiResponse<T>`，语义与结构等价 |
+| MVC 三层 + Mapper | 已实现（JPA实现） | 采用成熟的 `Controller + Service + Repository(JPA)` 分层架构 |
+| 事务保证订单原子性 | 已实现 | `OrderService#create`、`updateStatus` 等写操作均使用 `@Transactional` |
+| JWT 无状态认证 | 已实现 | Spring Security + JWT，无会话存储 |
+| 角色权限控制 | 已实现 | 基于角色的权限隔离（`ADMIN` / `USER`） |
+| BCrypt 密码加密 | 已实现 | 后端登录、注册及管理员初始化均使用 BCrypt 加密 |
+| 关键字段索引优化 | 已实现 | 订单、线路、酒店、景点、用户等表关键业务字段均已显式配置索引 |
 
 ## 10. 后续建议
 
-- 新增 `Hotel` 实体、后台管理接口和前端页面，补齐酒店资源模块
-- 为订单增加显式 `REJECTED` 状态与拒绝原因
-- 为统计报表增加 `CSV` 导出接口与前端下载按钮
-- 将数据库索引设计从“隐式/默认”升级为“显式可审计”
-- 视验收要求决定是否把 `ApiResponse<T>` 重命名为 `Result<T>`
+- 补充自动化单元测试：在 `src/test/java` 中补齐订单流转、CSV 导出及鉴权等关键用例
+- 前台酒店查询扩展：根据展示需求决定是否在 `PublicController` 增加公共酒店列表与详情接口
+- 路线一键上下架：可在线路管理表格操作列增加快捷“发布/下架”按钮，免去进入编辑弹窗
+- 统一响应命名别名：视严格验收标准决定是否为 `ApiResponse<T>` 增加名为 `Result<T>` 的类型别名或过渡类
 
 ## 11. 开发环境说明
 
@@ -351,7 +367,7 @@ server {
 - Node.js：建议使用当前 Vite 版本兼容的 LTS 版本
 - JWT 配置：
   - `secret` 已配置
-  - `access-token-validity = 86400` 秒
+  - `access-token-validity = 7200` 秒（2小时）
 - CORS：
   - 开发环境允许所有来源：`*`
 

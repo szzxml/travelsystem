@@ -450,55 +450,58 @@ onMounted(loadDashboard)
 </script>
 
 <template>
-  <div class="flex flex-col gap-8 rounded-[32px] bg-white/50 p-1 text-gray-900 transition-colors duration-300">
-    <section
-      class="relative overflow-hidden rounded-[32px] px-6 py-7 text-white transition-colors duration-300 sm:px-8"
-      :style="dashboardHeroStyle"
-    >
-      <div class="absolute inset-y-0 right-0 w-1/2" :style="dashboardHeroGlowStyle" />
-      <div class="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-        <div class="max-w-2xl">
-          <p class="text-sm font-semibold uppercase tracking-[0.35em] text-white/70">
-            {{ $t('dashboard.overview') }}
-          </p>
-          <h2 class="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+  <div class="flex flex-col gap-6 text-gray-900 transition-colors duration-300">
+    <!-- Sleek Executive Topbar -->
+    <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl px-6 py-4 shadow-sm">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <h2 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">
             {{ $t('dashboard.overviewTitle') }}
           </h2>
-          <p class="mt-3 max-w-xl text-sm leading-7 text-white/80 sm:text-base">
-            {{ $t('dashboard.overviewDescription') }}
-          </p>
+          <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 font-semibold border border-emerald-200/60 dark:border-emerald-800/60">
+            实时运行
+          </span>
+        </div>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          {{ $t('dashboard.overviewDescription') }} · 数据已自动同步
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3 shrink-0">
+        <div class="hidden sm:flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 px-3 py-2 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
+          <CalendarDaysIcon class="h-4 w-4 text-teal-600" />
+          <span>{{ formatDate(new Date()) }}</span>
         </div>
 
-        <div class="flex flex-wrap gap-3">
-          <button
-            type="button"
-            class="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-left text-white transition hover:bg-white/16 disabled:cursor-not-allowed disabled:opacity-60"
-            :disabled="exporting"
-            @click="downloadStats"
-          >
-            <p class="text-xs uppercase tracking-[0.3em] text-white/60">{{ $t('dashboard.export') }}</p>
-            <p class="mt-2 flex items-center gap-2 text-sm font-medium text-white">
-              <ArrowDownTrayIcon class="h-4 w-4" />
-              {{ exporting ? $t('dashboard.exporting') : $t('dashboard.exportCsv') }}
-            </p>
-          </button>
-          <div class="rounded-2xl border border-white/10 bg-white/10 px-4 py-3">
-            <p class="text-xs uppercase tracking-[0.3em] text-white/60">{{ $t('dashboard.today') }}</p>
-            <p class="mt-2 flex items-center gap-2 text-sm font-medium text-white">
-              <CalendarDaysIcon class="h-4 w-4" />
-              {{ formatDate(new Date()) }}
-            </p>
-          </div>
-          <div class="rounded-2xl border border-white/10 bg-white/10 px-4 py-3">
-            <p class="text-xs uppercase tracking-[0.3em] text-white/60">{{ $t('dashboard.growth') }}</p>
-            <p class="mt-2 flex items-center gap-2 text-sm font-medium text-white">
-              <ArrowTrendingUpIcon class="h-4 w-4" />
-              {{ $t('dashboard.todayOrdersLabel', { count: statsPayload.todayOrders }) }}
-            </p>
-          </div>
-        </div>
+        <button
+          type="button"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold rounded-xl shadow-sm transition disabled:opacity-60 disabled:cursor-not-allowed active:scale-95"
+          :disabled="exporting"
+          @click="downloadStats"
+        >
+          <ArrowDownTrayIcon class="h-4 w-4" />
+          <span>{{ exporting ? $t('dashboard.exporting') : $t('dashboard.exportCsv') }}</span>
+        </button>
       </div>
-    </section>
+    </header>
+
+    <!-- Pending Orders Alert Bar (if any pending orders) -->
+    <div
+      v-if="statsPayload.pendingOrders > 0"
+      class="flex items-center justify-between px-5 py-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs sm:text-sm font-medium shadow-sm"
+    >
+      <div class="flex items-center gap-2.5">
+        <ClockIcon class="h-5 w-5 text-amber-600 dark:text-amber-400 animate-bounce shrink-0" />
+        <span>当前系统有 <strong>{{ statsPayload.pendingOrders }}</strong> 笔待确认订单，建议及时审批流转或填写原因拒绝。</span>
+      </div>
+      <RouterLink
+        to="/admin/orders?status=PENDING"
+        class="text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white px-3.5 py-1.5 rounded-lg transition shadow-sm shrink-0"
+      >
+        立即处理 →
+      </RouterLink>
+    </div>
 
     <section class="grid gap-5 xl:grid-cols-4 md:grid-cols-2">
       <article

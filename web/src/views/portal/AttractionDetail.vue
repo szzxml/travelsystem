@@ -4,11 +4,27 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { getPublicAttraction } from '@/api/public'
 import { formatMoney } from '@/utils/format'
+import forestHero from '@/assets/forest-hero.jpg'
 
 const route = useRoute()
 const router = useRouter()
 const detail = ref(null)
 const loading = ref(true)
+
+const fallbackAttractionImage = 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1200&q=80'
+
+function getDetailCover(item) {
+  if (item?.coverImage && String(item.coverImage).trim()) {
+    return item.coverImage.trim()
+  }
+  return fallbackAttractionImage
+}
+
+function handleImageError(event) {
+  if (event?.target) {
+    event.target.src = forestHero
+  }
+}
 
 const statusType = computed(() => {
   if (detail.value?.status === 'OPEN') return 'success'
@@ -53,8 +69,7 @@ onMounted(async () => {
       <div class="detail-layout">
         <div class="detail-main">
           <div class="detail-cover">
-            <img v-if="detail.coverImage" :src="detail.coverImage" :alt="detail.name">
-            <div v-else class="cover-placeholder">{{ detail.location || '景点信息' }}</div>
+            <img :src="getDetailCover(detail)" :alt="detail.name" @error="handleImageError">
           </div>
 
           <el-card class="detail-card" shadow="never">

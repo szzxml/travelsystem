@@ -352,8 +352,8 @@ onUnmounted(() => {
 
         <div class="min-w-0 flex-1">
           <header class="liquid-glass-strong !overflow-visible z-20 rounded-[2rem] px-4 py-4 md:px-6">
-            <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <div class="flex items-center gap-3">
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between flex-wrap">
+              <div class="flex items-center gap-3 shrink-0">
                 <button
                   type="button"
                   class="theme-control inline-flex h-11 w-11 items-center justify-center rounded-2xl transition-transform hover:scale-105 lg:hidden"
@@ -367,7 +367,7 @@ onUnmounted(() => {
                 </div>
               </div>
 
-              <div class="flex flex-1 flex-col gap-3 lg:max-w-3xl lg:flex-row lg:items-center lg:justify-end">
+              <div class="flex flex-1 flex-col gap-3 lg:max-w-3xl lg:flex-row lg:items-center lg:justify-end flex-wrap">
                 <div class="relative flex-1">
                   <label class="theme-search-control flex items-center gap-3 rounded-2xl px-4 py-3">
                     <MagnifyingGlassIcon class="h-5 w-5" />
@@ -422,7 +422,7 @@ onUnmounted(() => {
                   </div>
                 </div>
 
-                <div class="flex items-center justify-between gap-2 lg:justify-end">
+                <div class="flex flex-wrap items-center justify-between gap-2 lg:justify-end shrink-0">
                   <div class="relative">
                     <button
                       type="button"

@@ -177,8 +177,10 @@ watch(
         </el-table-column>
         <el-table-column label="操作" width="170" align="center" fixed="right">
           <template #default="{ row }">
-            <el-button size="small" @click="openEdit(row)">编辑</el-button>
-            <el-button size="small" type="danger" @click="removeItem(row)">删除</el-button>
+            <div class="flex items-center justify-center gap-1.5">
+              <el-button size="small" @click="openEdit(row)">编辑</el-button>
+              <el-button size="small" type="danger" @click="removeItem(row)">删除</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>

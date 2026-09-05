@@ -464,8 +464,8 @@ html.dark .el-textarea__inner {
 
 .el-table,
 .el-table tr,
-.el-table th.el-table__cell,
-.el-table td.el-table__cell,
+.el-table th.el-table__cell:not(.el-table-fixed-column--right):not(.el-table-fixed-column--left),
+.el-table td.el-table__cell:not(.el-table-fixed-column--right):not(.el-table-fixed-column--left),
 .el-table__inner-wrapper::before {
   background: transparent !important;
   color: var(--text-80) !important;
@@ -547,7 +547,11 @@ html.dark .el-textarea__inner {
   font-size: 12px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  background: rgba(var(--brand-soft-rgb), 0.42) !important;
+  background: #f1f5f9 !important;
+}
+
+html.dark .admin-liquid-table .el-table__header-wrapper th {
+  background: #172633 !important;
 }
 
 .admin-liquid-table .el-table__body td {
@@ -556,6 +560,124 @@ html.dark .el-textarea__inner {
 
 .admin-liquid-table .el-table__row:hover > td {
   background: rgba(var(--brand-primary-ring), 0.06) !important;
+}
+
+/* ============================================================
+   Element Plus Fixed Column & Sticky Cell Occlusion Fix
+   Ensures sticky/fixed columns ("操作" column, etc.) have an
+   opaque solid background so scrolling cells do not bleed through.
+   ============================================================ */
+.el-table th.el-table-fixed-column--right,
+.el-table td.el-table-fixed-column--right,
+.el-table th.el-table-fixed-column--left,
+.el-table td.el-table-fixed-column--left,
+.admin-liquid-table th.el-table-fixed-column--right,
+.admin-liquid-table td.el-table-fixed-column--right,
+.admin-liquid-table th.el-table-fixed-column--left,
+.admin-liquid-table td.el-table-fixed-column--left,
+.el-table__fixed-right,
+.el-table__fixed-left,
+.el-table__fixed-right-patch {
+  z-index: 5 !important;
+}
+
+/* Light mode solid backgrounds for fixed columns */
+.el-table td.el-table-fixed-column--right,
+.el-table td.el-table-fixed-column--left,
+.admin-liquid-table td.el-table-fixed-column--right,
+.admin-liquid-table td.el-table-fixed-column--left {
+  background-color: #ffffff !important;
+}
+
+.el-table th.el-table-fixed-column--right,
+.el-table th.el-table-fixed-column--left,
+.admin-liquid-table th.el-table-fixed-column--right,
+.admin-liquid-table th.el-table-fixed-column--left,
+.el-table__fixed-right-patch {
+  background-color: #f1f5f9 !important;
+}
+
+/* Striped rows support for fixed columns */
+.el-table--striped .el-table__row--striped td.el-table-fixed-column--right,
+.el-table--striped .el-table__row--striped td.el-table-fixed-column--left,
+.admin-liquid-table.el-table--striped .el-table__row--striped td.el-table-fixed-column--right,
+.admin-liquid-table.el-table--striped .el-table__row--striped td.el-table-fixed-column--left {
+  background-color: #f8fafc !important;
+}
+
+/* Hover state for fixed columns */
+.el-table .el-table__row:hover > td.el-table-fixed-column--right,
+.el-table .el-table__row:hover > td.el-table-fixed-column--left,
+.admin-liquid-table .el-table__row:hover > td.el-table-fixed-column--right,
+.admin-liquid-table .el-table__row:hover > td.el-table-fixed-column--left {
+  background-color: #eef5f8 !important;
+}
+
+/* Clear shadow boundary on fixed columns to occlude scrolling text */
+.el-table th.el-table-fixed-column--right,
+.el-table td.el-table-fixed-column--right,
+.admin-liquid-table th.el-table-fixed-column--right,
+.admin-liquid-table td.el-table-fixed-column--right,
+.el-table__fixed-right {
+  box-shadow: -8px 0 18px -2px rgba(15, 23, 42, 0.12) !important;
+  border-left: 1px solid var(--border-strong) !important;
+}
+
+.el-table th.el-table-fixed-column--left,
+.el-table td.el-table-fixed-column--left,
+.admin-liquid-table th.el-table-fixed-column--left,
+.admin-liquid-table td.el-table-fixed-column--left,
+.el-table__fixed-left {
+  box-shadow: 8px 0 18px -2px rgba(15, 23, 42, 0.12) !important;
+  border-right: 1px solid var(--border-strong) !important;
+}
+
+/* Dark mode solid backgrounds for fixed columns */
+html.dark .el-table td.el-table-fixed-column--right,
+html.dark .el-table td.el-table-fixed-column--left,
+html.dark .admin-liquid-table td.el-table-fixed-column--right,
+html.dark .admin-liquid-table td.el-table-fixed-column--left {
+  background-color: #1a2730 !important;
+}
+
+html.dark .el-table th.el-table-fixed-column--right,
+html.dark .el-table th.el-table-fixed-column--left,
+html.dark .admin-liquid-table th.el-table-fixed-column--right,
+html.dark .admin-liquid-table th.el-table-fixed-column--left,
+html.dark .el-table__fixed-right-patch {
+  background-color: #141f27 !important;
+}
+
+html.dark .el-table--striped .el-table__row--striped td.el-table-fixed-column--right,
+html.dark .el-table--striped .el-table__row--striped td.el-table-fixed-column--left,
+html.dark .admin-liquid-table.el-table--striped .el-table__row--striped td.el-table-fixed-column--right,
+html.dark .admin-liquid-table.el-table--striped .el-table__row--striped td.el-table-fixed-column--left {
+  background-color: #16232c !important;
+}
+
+html.dark .el-table .el-table__row:hover > td.el-table-fixed-column--right,
+html.dark .el-table .el-table__row:hover > td.el-table-fixed-column--left,
+html.dark .admin-liquid-table .el-table__row:hover > td.el-table-fixed-column--right,
+html.dark .admin-liquid-table .el-table__row:hover > td.el-table-fixed-column--left {
+  background-color: #21323e !important;
+}
+
+html.dark .el-table th.el-table-fixed-column--right,
+html.dark .el-table td.el-table-fixed-column--right,
+html.dark .admin-liquid-table th.el-table-fixed-column--right,
+html.dark .admin-liquid-table td.el-table-fixed-column--right,
+html.dark .el-table__fixed-right {
+  box-shadow: -8px 0 18px -2px rgba(0, 0, 0, 0.5) !important;
+  border-left: 1px solid var(--border-strong) !important;
+}
+
+html.dark .el-table th.el-table-fixed-column--left,
+html.dark .el-table td.el-table-fixed-column--left,
+html.dark .admin-liquid-table th.el-table-fixed-column--left,
+html.dark .admin-liquid-table td.el-table-fixed-column--left,
+html.dark .el-table__fixed-left {
+  box-shadow: 8px 0 18px -2px rgba(0, 0, 0, 0.5) !important;
+  border-right: 1px solid var(--border-strong) !important;
 }
 
 .admin-liquid-page .el-pagination {
