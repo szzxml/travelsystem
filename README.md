@@ -268,14 +268,26 @@ travelsystem
 
 启动命令示例：
 
+**方式一：源码开发直接运行（适合日常编码调试）**
+
 ```bash
 mvn spring-boot:run
+# 或指定国内镜像配置运行：
+mvn -s maven.settings.xml spring-boot:run
 ```
 
-或：
+**方式二：编译打包后运行（推荐，秒级极速启动，适合部署与演示）**
 
+1. 编译打包生成可执行 Jar 包：
 ```bash
-mvn -s maven.settings.xml spring-boot:run
+mvn clean package -DskipTests
+# 或指定国内镜像配置打包：
+mvn -s maven.settings.xml clean package -DskipTests
+```
+
+2. 运行打包好的 Jar 文件：
+```bash
+java -jar target/travelsystem-0.0.1-SNAPSHOT.jar
 ```
 
 健康检查：
